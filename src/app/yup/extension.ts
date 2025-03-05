@@ -23,7 +23,7 @@ Yup.addMethod<Yup.NumberSchema>(
       }, 0);
 
       // Проверяем, чтобы значение текущего поля превышало сумму
-      if (typeof value !== "number" || value <= sum) {
+      if (typeof value !== "number" || value < sum) {
         return createError({ path: this.path, message });
       }
 

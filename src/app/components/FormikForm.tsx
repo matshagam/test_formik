@@ -34,7 +34,7 @@ const squareValidation = Yup.number()
   .max(400)
   .moreThanSumOfFields(
     ["kitchenSquare", "livingSquare"],
-    "Общая площадь должна быть больше суммы жилой площади и площади кухни",
+    "Общая площадь должна быть больше или равна сумме площадей жилой и кухни",
   )
   .typeError("Площадь должна быть числом");
 const livingSquareValidation = Yup.number()
