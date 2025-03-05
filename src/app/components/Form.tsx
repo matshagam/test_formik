@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -15,7 +16,6 @@ import { FormikFieldWrapper } from "./FormikFieldWrapper";
 import "../yup/config";
 import "../yup/extension";
 
-// Вынесем валидацию полей в отдельные переменные для улучшения читаемости
 const nameValidation = Yup.string().required();
 const addressValidation = Yup.string().required();
 const totalFloorsValidation = Yup.number()
@@ -46,7 +46,6 @@ const kitchenSquareValidation = Yup.number()
   .min(0)
   .typeError("Площадь кухни должна быть числом");
 
-// Схема валидации для всей формы
 const validationSchema = Yup.object().shape({
   name: nameValidation,
   address: addressValidation,
@@ -57,7 +56,6 @@ const validationSchema = Yup.object().shape({
   kitchenSquare: kitchenSquareValidation,
 });
 
-// Константа для начальных значений формы
 const initialValues = {
   name: "",
   address: "",
@@ -70,7 +68,6 @@ const initialValues = {
   isResidential: "",
 };
 
-// Вынесем повторяющийся компонент FormControl в отдельную функцию
 function renderFormField({
   name,
   label,
