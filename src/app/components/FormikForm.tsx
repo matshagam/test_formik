@@ -92,7 +92,7 @@ function renderFormField({
   );
 }
 
-export default function App() {
+export default function FormikForm() {
   return (
     <Stack direction="column" align="center">
       <Box w="sm" p={15}>
