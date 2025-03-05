@@ -1,5 +1,5 @@
 import FormikForm from "./components/FormikForm";
 
-export default function Home() {
+export default function App() {
   return <FormikForm />;
 }
