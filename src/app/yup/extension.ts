@@ -6,7 +6,7 @@ Yup.addMethod<Yup.NumberSchema>(
   "moreThanSumOfFields",
   function (
     fields: string[],
-    message = "The value should be greater than the sum of the specified fields.",
+    message: string,
   ) {
     return this.test("moreThanSumOfFields", message, function (value) {
       const { parent, createError } = this;
