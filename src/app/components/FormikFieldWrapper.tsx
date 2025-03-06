@@ -47,7 +47,7 @@ export const FormikFieldWrapper: React.FC<FieldWrapperProps> = ({
           );
         }
 
-        return <Input {...field} focusBorderColor="brand.200" />;
+        return <Input {...field} focusBorderColor="#FFCE60" />;
       }}
     </Field>
   );
