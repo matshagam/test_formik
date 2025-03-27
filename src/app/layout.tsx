@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { ChakraProvider } from "@chakra-ui/react";
+import React from "react";
 
 export const metadata: Metadata = {
-  title: "Лабецкий Недвижимость",
+  title: "Форма",
   description: "Форма с валидацией",
 };
 
@@ -13,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body>
-        <ChakraProvider>{children}</ChakraProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
