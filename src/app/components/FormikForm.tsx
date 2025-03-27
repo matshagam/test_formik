@@ -1,6 +1,4 @@
-"use client";
-
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -9,8 +7,8 @@ import {
   FormControl,
   FormLabel,
   FormHelperText,
-  Image,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 import { FormikFieldWrapper } from "./FormikFieldWrapper";
 import "../yup/config";
@@ -68,42 +66,88 @@ const initialValues = {
   isResidential: "",
 };
 
-function renderFormField({
-  name,
-  label,
-  type = "text",
-  errors,
-  touched,
-}: {
-  name: string;
-  label: string;
-  type?: string;
-  errors: Record<string, string | undefined>;
-  touched: Record<string, boolean | undefined>;
-}) {
-  return (
-    <FormControl mt={4} isInvalid={!!errors[name] && !!touched[name]}>
-      <FormLabel>{label}</FormLabel>
-      <FormikFieldWrapper name={name} type={type} />
-      {errors[name] && (
-        <FormHelperText color="red.500">{errors[name]}</FormHelperText>
-      )}
-    </FormControl>
-  );
-}
-
 export default function FormikForm() {
+  const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const renderFormField = ({
+    name,
+    label,
+    type = "text",
+    errors,
+    touched,
+  }: {
+    name: string;
+    label: string;
+    type?: string;
+    errors: Record<string, string | undefined>;
+    touched: Record<string, boolean | undefined>;
+  }) => {
+    return (
+      <FormControl mt={4} isInvalid={!!errors[name] && !!touched[name]}>
+        <FormLabel>{label}</FormLabel>
+        <FormikFieldWrapper name={name} type={type} />
+        {errors[name] && (
+          <FormHelperText color="red.500">{errors[name]}</FormHelperText>
+        )}
+      </FormControl>
+    );
+  };
+
+  const handleSubmit = async (values: typeof initialValues) => {
+    try {
+      setIsLoading(true);
+
+      const response = await fetch("/api/submit-property", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values), // отправляем значения из формы
+      });
+
+      const data = await response.json();
+      console.log("Ответ сервера:", data);
+
+      toast({
+        title: "Данные успешно отправлены!",
+        description: "Запись была добавлена в базу данных.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Ошибка отправки формы:", error);
+        toast({
+          title: "Ошибка отправки данных",
+          description: error.message || "Что-то пошло не так.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Неизвестная ошибка",
+          description: "Произошло что-то непредсказуемое.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } finally {
+      setIsLoading(false); // Сбросим флаг загрузки после завершения
+    }
+  };
+
   return (
-    <Stack direction="column" align="center">
-      <Box w="sm" p={15}>
-        <Image src="/icons/logo.svg" alt="HomeOfferIcon" w="sm" p={15} />
-      </Box>
+    <Stack direction="column" align="center" mt={30}>
       <Box w="sm" p={15}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log("Форма отправлена:", { values });
+          onSubmit={(values, { setSubmitting }) => {
+            handleSubmit(values).finally(() => {
+              setSubmitting(false);
+            });
           }}
         >
           {({ errors, touched }) => (
@@ -172,7 +216,13 @@ export default function FormikForm() {
                   label="Согласие на обработку"
                 />
               </Box>
-              <Button mt={6} w="100%" colorScheme="yellow" type="submit">
+              <Button
+                mt={6}
+                w="100%"
+                colorScheme="yellow"
+                type="submit"
+                isLoading={isLoading}
+              >
                 Отправить
               </Button>
             </Form>
